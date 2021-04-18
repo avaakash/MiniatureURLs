@@ -13,6 +13,14 @@ class StoredUrls(models.Model):
     expiry_time = models.DateTimeField(
         default=default_expiry_time)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    visits = models.PositiveIntegerField(default=0)
+
+    def increment_visits(self):
+        self.visits = self.visits + 1
+        self.save()
+
+    def expiry_time_days(self):
+        return (self.expiry_time - self.creation_time).days
 
     class Meta:
         verbose_name = 'Stored URL'

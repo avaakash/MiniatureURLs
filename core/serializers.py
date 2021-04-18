@@ -18,28 +18,24 @@ class CreateShortenedUrlSerializer(serializers.ModelSerializer):
             validated_data['expiry_time'] = timedelta(days=et)
             print(validated_data['expiry_time'])
         return validated_data
-    
+
     def save(self, **kwargs):
         obj = super().save(**kwargs)
-    #     if not obj.shortened_url:
-    #         obj.shortened_url = idToBase62(obj.pk)
-    #         obj.save()
         return obj
 
     def create(self, validated_data) -> StoredUrls:
-        et = validated_data.get('expiry_time', None)
-        print(et)
+        et =  validated_data.get('expiry_time', None)
         if et:
-            validated_data['expiry_time'] = timezone.now() + timedelta(days=et)
-            print(validated_data['expiry_time'])
+            validated_data['expiry_time'] = timezone.now() + et
         obj = StoredUrls.objects.create(**validated_data)
         obj.shortened_url = idToBase62(obj.pk)
         obj.save()
         return obj
-    
+
     def update(self, instance: StoredUrls, validated_data) -> StoredUrls:
-        et = validated_data.get('expiry_time',None)
+        et = validated_data.get('expiry_time', None)
         instance.expiry_time = instance.creation_time + et if et else instance.expiry_time
+        instance.redirect_url = validated_data.get('redirect_url', instance.redirect_url)
         instance.save()
         return instance
 
@@ -50,7 +46,13 @@ class CreateShortenedUrlSerializer(serializers.ModelSerializer):
 
 
 class ShortenedUrlSerializer(serializers.ModelSerializer):
+    expiry_time_days = serializers.SerializerMethodField()
+
+    def get_expiry_time_days(self, obj):
+        return obj.expiry_time_days()
+
     class Meta:
         model = StoredUrls
         fields = ['shortened_url', 'redirect_url',
-                  'expiry_time']
+                  'expiry_time', 'creation_time', 'pk', 
+                  'expiry_time_days', 'visits']

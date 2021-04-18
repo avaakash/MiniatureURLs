@@ -69,8 +69,9 @@ def deleteShortenedUrl(request, pk) -> Response:
 def redirectToUrl(request, shortened_url):
     try:
         instance = StoredUrls.objects.get(shortened_url=shortened_url)
-        if instance.expiry_time > timezone.now():
+        if instance.expiry_time < timezone.now():
             return HttpResponse("Link Expired!")
+        instance.increment_visits()
         return HttpResponsePermanentRedirect(instance.redirect_url)
     except ObjectDoesNotExist:
         raise Http404

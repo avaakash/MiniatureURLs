@@ -1,6 +1,7 @@
 # MiniatureURLs
 MiniatureURLs is a URL shortening service built using Django. 
-*Website*: miniatureurls.ml
+
+*Website*: [miniatureurls.ml](miniatureurls.ml)
 Create an account and then start using the service. The front-end is basic, will be improved with time.
 
 

@@ -4,7 +4,7 @@ from django.http.response import HttpResponse
 from django.utils import timezone
 
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import serializers, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
@@ -28,6 +28,16 @@ def createShortenedUrl(request) -> Response:
     return Response(r.object(), status=status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getAllUrls(request) -> Response:
+    r = StandardResponseStructure()
+    urls = StoredUrls.objects.filter(user=request.user)
+    serialized = ShortenedUrlSerializer(urls, many=True)
+    r.status = True
+    r.data = serialized.data
+    return Response(r.object(), status=status.HTTP_200_OK)
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def editShortenedUrl(request, pk) -> Response:
@@ -38,7 +48,7 @@ def editShortenedUrl(request, pk) -> Response:
             raise ObjectDoesNotExist
     except ObjectDoesNotExist:
         r.message = 'URL not found or user not authorized'
-        return Response(r, status=status.HTTP_200_OK)
+        return Response(r.object(), status=status.HTTP_200_OK)
     data = CreateShortenedUrlSerializer(instance, data=request.data, partial=True)
     if data.is_valid():
         obj = data.save()

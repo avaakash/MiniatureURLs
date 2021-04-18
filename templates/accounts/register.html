@@ -1,0 +1,28 @@
+{% load static widget_tweaks %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Register </title>
+        <link rel='stylesheet' href="{% static 'register.css' %}">
+    </head>
+    <body>
+        <div class="user">
+            <header class="user__header">
+                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3219/logo.svg" alt="" />
+                <h1 class="user__title">Register Here</h1>
+            </header>
+            
+            <form class="form">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form__group">
+                        {% render_field field class+='form__input' %}
+                    </div>
+                {% endfor %}
+                <button class="btn" type="submit">Register</button>
+            </form>
+        </div>
+
+        <script src="{% static 'register.js' %}"></script>
+    </body>
+</html>

@@ -1,0 +1,413 @@
+openapi: 3.0.0
+info:
+  title: ver1
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /api/shortenUrl:
+    parameters: []
+    post:
+      summary: Shorten URL
+      operationId: post-api-shortenUrl
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: array
+                    uniqueItems: true
+                    minItems: 1
+                    items:
+                      required:
+                        - shortened_url
+                        - redirect_url
+                        - expiry_time
+                        - creation_time
+                        - pk
+                        - expiry_time_days
+                        - visits
+                      properties:
+                        shortened_url:
+                          type: string
+                          minLength: 1
+                        redirect_url:
+                          type: string
+                          minLength: 1
+                        expiry_time:
+                          type: string
+                          minLength: 1
+                        creation_time:
+                          type: string
+                          minLength: 1
+                        pk:
+                          type: number
+                        expiry_time_days:
+                          type: number
+                        visits:
+                          type: number
+                  message:
+                    type: string
+                  status:
+                    type: boolean
+                required:
+                  - data
+                  - message
+                  - status
+      description: Endpoint to shorten URL using the shortening service.
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: Bearer Access Token
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                redirect_url:
+                  type: string
+                  minLength: 1
+                  description: Valid URL format allowed only
+                expiry_time:
+                  type: number
+              required:
+                - redirect_url
+        description: ''
+  '/api/editUrl/{Primary Key}':
+    post:
+      summary: Edit Shortened URL
+      operationId: post-api-editUrl
+      responses:
+        '200':
+          description: URL edited
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: array
+                    uniqueItems: true
+                    minItems: 1
+                    items:
+                      required:
+                        - shortened_url
+                        - redirect_url
+                        - expiry_time
+                        - creation_time
+                        - pk
+                        - expiry_time_days
+                        - visits
+                      properties:
+                        shortened_url:
+                          type: string
+                          minLength: 1
+                        redirect_url:
+                          type: string
+                          minLength: 1
+                        expiry_time:
+                          type: string
+                          minLength: 1
+                        creation_time:
+                          type: string
+                          minLength: 1
+                        pk:
+                          type: number
+                        expiry_time_days:
+                          type: number
+                        visits:
+                          type: number
+                  message:
+                    type: string
+                  status:
+                    type: boolean
+                required:
+                  - data
+                  - message
+                  - status
+              examples: {}
+        '400':
+          description: Missing Required Information
+        '409':
+          description: Email Already Taken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                dateOfBirth:
+                  type: string
+                  format: date
+              required:
+                - firstName
+                - lastName
+                - email
+                - dateOfBirth
+            examples:
+              Create User Bob Fellow:
+                value:
+                  firstName: Bob
+                  lastName: Fellow
+                  email: bob.fellow@gmail.com
+                  dateOfBirth: '1996-08-24'
+          application/xml:
+            schema:
+              description: ''
+              type: object
+              properties:
+                redirect_url:
+                  type: string
+                  minLength: 1
+                expiry_time:
+                  type: number
+        description: Allowed to change the redirected URL or the expiry time
+      description: Edit shortened URL
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: Bearer Access Token
+          required: true
+    parameters:
+      - schema:
+          type: string
+        name: Primary Key
+        in: path
+        required: true
+        description: Primary Key of the URL to edit
+  '/api/deleteUrl/{Primary Key}':
+    post:
+      summary: Delete Shortened URL
+      operationId: post-api-deleteUrl
+      responses:
+        '200':
+          description: URL deleted
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      required: []
+                      properties: {}
+                  message:
+                    type: string
+                  status:
+                    type: boolean
+                required:
+                  - data
+                  - message
+                  - status
+      description: Delete shortened URL
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: Bearer Access Token
+          required: true
+    parameters:
+      - schema:
+          type: string
+        name: Primary Key
+        in: path
+        required: true
+        description: Primary Key of the URL to edit
+  /api/allUrls:
+    get:
+      summary: Get all URLs
+      tags: []
+      responses:
+        '200':
+          description: Fetched all URLs created
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  data:
+                    type: array
+                    uniqueItems: true
+                    minItems: 1
+                    items:
+                      required:
+                        - shortened_url
+                        - redirect_url
+                        - expiry_time
+                        - creation_time
+                        - pk
+                        - expiry_time_days
+                        - visits
+                      properties:
+                        shortened_url:
+                          type: string
+                          minLength: 1
+                        redirect_url:
+                          type: string
+                          minLength: 1
+                        expiry_time:
+                          type: string
+                          minLength: 1
+                        creation_time:
+                          type: string
+                          minLength: 1
+                        pk:
+                          type: number
+                        expiry_time_days:
+                          type: number
+                        visits:
+                          type: number
+                  message:
+                    type: string
+                  status:
+                    type: boolean
+                required:
+                  - data
+                  - message
+                  - status
+              examples:
+                Sample Response:
+                  value:
+                    data:
+                      - shortened_url: d
+                        redirect_url: 'https://www.programcreek.com/python/example/97056/django.http.response.HttpResponseBase'
+                        expiry_time: '2022-04-18T19:52:26.952519+05:30'
+                        creation_time: '2021-04-18T19:52:32.543521+05:30'
+                        pk: 3
+                        expiry_time_days: 364
+                        visits: 0
+                      - shortened_url: e
+                        redirect_url: 'https://www.programcreek.com/python/example/97056/django.http.response.HttpResponseBase'
+                        expiry_time: '2022-04-18T19:54:54.713500+05:30'
+                        creation_time: '2021-04-18T19:54:59.104541+05:30'
+                        pk: 4
+                        expiry_time_days: 364
+                        visits: 0
+                    message: ''
+                    status: true
+      operationId: get-api-allUrls
+      description: Get all URLs created by the user
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: Bearer Access Token
+  /api/token:
+    parameters: []
+    post:
+      summary: Get Access Token
+      operationId: post-api-token
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  refresh_token:
+                    type: string
+      description: Get Access Token for accessing the APIs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+        description: |-
+          Provide the username and password of the account
+          Access token: used to access the APIs (valid for 24 hours) 
+          Refresh token: used to get a new access token without credentials (valid for 48 hours)
+  /api/token/refresh:
+    post:
+      summary: Refresh Access Token
+      operationId: post-api-token-refresh
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+      description: |-
+        Provide refresh token to acquire new access token
+        Access token: used to access the APIs (valid for 24 hours) 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh_token:
+                  type: string
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      description: ''
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the given user.
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        dateOfBirth:
+          type: string
+          format: date
+          example: '1997-10-31'
+        emailVerified:
+          type: boolean
+          description: Set to true if the user's email has been verified.
+        createDate:
+          type: string
+          format: date
+          description: The date that the user was created.
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - emailVerified
+  securitySchemes: {}
